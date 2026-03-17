@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Study Planner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2 class="logo">SmartStudy</h2>
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="profile.html">👤  User Profile</a>
+    <a href="planner.html">📅 Planner</a>
+    <a href="task.html">✅ Tasks</a>
+    <a href="notes.html">📝 Notes</a>
+    <a href="progress.html">📊 Progress</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="register.html">📝 Register</a>
+    <a href="reviews.html">💬 Reviews</a>
+    <a href="relax.html">🧩 Relax Zone</a>
+ <a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<div class="main">
+    <h1>Study Planner</h1>
+
+    <input id="plannerTask" placeholder="Add Task for Today">
+    <input id="plannerPoints" type="number" placeholder="Points" min="1" max="10">
+    <button onclick="addPlannerTask()">Add</button>
+
+    <ul id="plannerList"></ul>
+</div>
+
+<script>
+function addPlannerTask(){
+    let task = document.getElementById("plannerTask").value;
+    let points = parseInt(document.getElementById("plannerPoints").value) || 0;
+    if(!task) return;
+
+    let planner = JSON.parse(localStorage.getItem("planner") || "[]");
+    planner.push({task, points});
+    localStorage.setItem("planner", JSON.stringify(planner));
+    renderPlanner();
+    document.getElementById("plannerTask").value = "";
+    document.getElementById("plannerPoints").value = "";
+}
+
+function renderPlanner(){
+    let list = document.getElementById("plannerList");
+    list.innerHTML = "";
+    let planner = JSON.parse(localStorage.getItem("planner") || "[]");
+    planner.forEach((p, i)=>{
+        let li = document.createElement("li");
+        li.innerHTML = `${p.task} - <b>${p.points} pts</b>`;
+        let delBtn = document.createElement("button");
+        delBtn.textContent="Delete";
+        delBtn.onclick = () => deletePlanner(i);
+        li.appendChild(delBtn);
+        list.appendChild(li);
+    });
+}
+
+function deletePlanner(index){
+    let planner = JSON.parse(localStorage.getItem("planner") || "[]");
+    planner.splice(index,1);
+    localStorage.setItem("planner", JSON.stringify(planner));
+    renderPlanner();
+}
+
+window.onload = renderPlanner;
+</script>
+</body>
+</html>

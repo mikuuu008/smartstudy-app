@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notes / Resources</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2 class="logo">SmartStudy</h2>
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="planner.html">📅 Planner</a>
+    <a href="task.html">✅ Tasks</a>
+    <a href="notes.html">📝 Notes</a>
+    <a href="progress.html">📊 Progress</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="register.html">📝 Register</a>
+    <a href="reviews.html">💬 Reviews</a>
+    <a href="relax.html">🧩 Relax Zone</a>
+   <a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<div class="main">
+    <h1>Notes / Resources</h1>
+    <input id="noteInput" placeholder="Enter Note">
+    <input id="notePoints" type="number" placeholder="Importance (1-5)" min="1" max="5">
+    <button onclick="addNote()">Add Note</button>
+    <ul id="noteList"></ul>
+</div>
+
+<script>
+function addNote(){
+    let note = document.getElementById("noteInput").value;
+    let points = parseInt(document.getElementById("notePoints").value) || 0;
+    if(!note) return;
+    let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+    notes.push({note, points});
+    localStorage.setItem("notes", JSON.stringify(notes));
+    renderNotes();
+    document.getElementById("noteInput").value="";
+    document.getElementById("notePoints").value="";
+}
+
+function renderNotes(){
+    let list = document.getElementById("noteList");
+    list.innerHTML="";
+    let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+    notes.forEach((n,i)=>{
+        let li = document.createElement("li");
+        li.innerHTML = `${n.note} - <b>${n.points} pts</b>`;
+        let delBtn = document.createElement("button");
+        delBtn.textContent="Delete";
+        delBtn.onclick = ()=>deleteNote(i);
+        li.appendChild(delBtn);
+        list.appendChild(li);
+    });
+}
+
+function deleteNote(index){
+    let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+    notes.splice(index,1);
+    localStorage.setItem("notes", JSON.stringify(notes));
+    renderNotes();
+}
+
+window.onload = renderNotes;
+</script>
+</body>
+</html>

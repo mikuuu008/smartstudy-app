@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartStudy Reviews</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2 class="logo">SmartStudy</h2>
+
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="planner.html">📅 Planner</a>
+    <a href="task.html">✅ Tasks</a>
+    <a href="notes.html">📝 Notes</a>
+    <a href="progress.html">📊 Progress</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="register.html">📝 Register</a>
+    <a href="reviews.html">💬 Reviews</a>
+    <a href="relax.html">🧩 Relax Zone</a>
+   <a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<!-- Main content -->
+<div class="main">
+    <h1>Customer Reviews</h1>
+
+    <label for="reviewInput">Write your review:</label><br>
+    <input id="reviewInput" placeholder="Write your review" style="width:70%;">
+    <select id="reviewRating">
+        <option value="5">★★★★★ 5</option>
+        <option value="4">★★★★ 4</option>
+        <option value="3">★★★ 3</option>
+        <option value="2">★★ 2</option>
+        <option value="1">★ 1</option>
+    </select>
+    <button onclick="addReview()">Submit Review</button>
+
+    <ul id="reviewList"></ul>
+</div>
+
+<script>
+// Add a new review
+function addReview(){
+    let reviewText = document.getElementById("reviewInput").value;
+    let rating = document.getElementById("reviewRating").value;
+    if(!reviewText) return;
+
+    let reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    reviews.push({text: reviewText, stars: rating});
+    localStorage.setItem("reviews", JSON.stringify(reviews));
+    renderReviews();
+    document.getElementById("reviewInput").value = "";
+}
+
+// Render all reviews
+function renderReviews(){
+    let list = document.getElementById("reviewList");
+    list.innerHTML = "";
+    let reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    reviews.forEach(r => {
+        let li = document.createElement("li");
+        li.innerHTML = `<b>${'★'.repeat(r.stars)}</b> - ${r.text}`;
+        list.appendChild(li);
+    });
+}
+
+// Load reviews on page load
+window.onload = renderReviews;
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+/* ========================== */
+/* GENERAL STYLES */
+/* ========================== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #111827;
+    background: #f4f6fb;
+}
+
+/* ========================== */
+/* SIDEBAR */
+/* ========================== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    background: #2563eb;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar .logo {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+    white-space: nowrap;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    display: block;
+    white-space: nowrap;
+}
+
+.sidebar a:hover {
+    background: #1d4ed8;
+}
+
+/* ========================== */
+/* MAIN CONTENT */
+/* ========================== */
+.main {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+/* ========================== */
+/* TITLES AND CARDS */
+/* ========================== */
+.title, h1, h2 {
+    margin: 10px 0;
+    color: #2563eb;
+    white-space: nowrap; /* fix split letters */
+}
+
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    width: 280px;
+}
+
+/* ========================== */
+/* INPUTS AND BUTTONS */
+/* ========================== */
+input {
+    padding: 10px;
+    margin: 5px 0;
+    width: 90%;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+/* ========================== */
+/* PROGRESS BAR */
+/* ========================== */
+.progress-bar {
+    width: 100%;
+    background: #e5e7eb;
+    border-radius: 6px;
+    height: 20px;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #2563eb;
+    border-radius: 6px;
+    text-align: center;
+    color: white;
+    line-height: 20px;
+    transition: width 0.3s ease;
+}
+
+/* ========================== */
+/* LISTS (Tasks / Reviews) */
+/* ========================== */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #eef2ff;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+/* ========================== */
+/* EDIT / DELETE BUTTONS */
+/* ========================== */
+.record-btn {
+    margin-left: 5px;
+    padding: 2px 6px;
+    font-size: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.record-btn.edit {
+    background: #f59e0b;
+}
+
+.record-btn.delete {
+    background: #ef4444;
+}
+
+/* ========================== */
+/* DARK MODE */
+/* ========================== */
+.dark {
+    background: #121212;
+    color: white;
+}
+
+.dark .card {
+    background: #1f1f1f;
+}
+
+.dark input {
+    background: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+}
+
+.dark button {
+    background: #2563eb;
+}

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tasks / To-Do</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2 class="logo">SmartStudy</h2>
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="planner.html">📅 Planner</a>
+    <a href="task.html">✅ Tasks</a>
+    <a href="notes.html">📝 Notes</a>
+    <a href="progress.html">📊 Progress</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="register.html">📝 Register</a>
+    <a href="reviews.html">💬 Reviews</a>
+<a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+
+<h1>Tasks / To-Do</h1>
+
+<div class="task-inputs">
+
+<input id="taskInput" placeholder="Enter Task">
+
+<input id="taskPoints" type="number" placeholder="Points (1-10)" min="1" max="10">
+
+<!-- SUBJECT SELECTOR (ADDED) -->
+<select id="taskSubject">
+<option value="HCI">HCI</option>
+<option value="Computer Graphics & Visualization">Computer Graphics & Visualization</option>
+<option value="Other">Other</option>
+</select>
+
+<button onclick="addTask()">Add Task</button>
+
+</div>
+
+<ul id="taskList"></ul>
+
+</div>
+
+<script>
+
+// ========== ADD TASK ==========
+function addTask() {
+
+let taskName = document.getElementById("taskInput").value.trim();
+
+let points = parseInt(document.getElementById("taskPoints").value) || 0;
+
+let subject = document.getElementById("taskSubject").value;
+
+if (!taskName) {
+
+alert("Please enter a task name");
+
+return;
+
+}
+
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+tasks.push({
+task: taskName,
+points: points,
+subject: subject
+});
+
+localStorage.setItem("tasks", JSON.stringify(tasks));
+
+renderTasks();
+
+document.getElementById("taskInput").value = "";
+document.getElementById("taskPoints").value = "";
+
+}
+
+// ========== RENDER TASK LIST ==========
+function renderTasks() {
+
+let list = document.getElementById("taskList");
+
+list.innerHTML = "";
+
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+tasks.forEach((t, i) => {
+
+let li = document.createElement("li");
+
+li.innerHTML = `[${t.subject}] ${t.task} - <b>${t.points} pts</b>`;
+
+
+// Edit button
+let editBtn = document.createElement("button");
+
+editBtn.textContent = "Edit";
+
+editBtn.classList.add("record-btn","edit");
+
+editBtn.onclick = () => editTask(i);
+
+
+// Delete button
+let delBtn = document.createElement("button");
+
+delBtn.textContent = "Delete";
+
+delBtn.classList.add("record-btn","delete");
+
+delBtn.onclick = () => deleteTask(i);
+
+li.appendChild(editBtn);
+
+li.appendChild(delBtn);
+
+list.appendChild(li);
+
+});
+
+}
+
+// ========== EDIT TASK ==========
+function editTask(index) {
+
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+let taskName = prompt("Edit Task Name", tasks[index].task);
+
+let taskPoints = parseInt(prompt("Edit Task Points", tasks[index].points));
+
+let subject = prompt("Edit Subject (HCI / Computer Graphics & Visualization / Other)", tasks[index].subject);
+
+if (taskName && !isNaN(taskPoints)) {
+
+tasks[index] = {
+task: taskName,
+points: taskPoints,
+subject: subject
+};
+
+localStorage.setItem("tasks", JSON.stringify(tasks));
+
+renderTasks();
+
+}
+
+}
+
+// ========== DELETE TASK ==========
+function deleteTask(index) {
+
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+tasks.splice(index, 1);
+
+localStorage.setItem("tasks", JSON.stringify(tasks));
+
+renderTasks();
+
+}
+
+// Load tasks
+window.onload = renderTasks;
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile Setup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2 class="logo">SmartStudy</h2>
+
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="planner.html">📅 Planner</a>
+    <a href="task.html">✅ Tasks</a>
+    <a href="notes.html">📝 Notes</a>
+    <a href="progress.html">📊 Progress</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="register.html">📝 Register</a>
+    <a href="reviews.html">💬 Reviews</a>
+    <a href="relax.html">🧩 Relax Zone</a>
+   <a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+    <div class="container">
+        <h1>Create Your Profile</h1>
+
+        <input id="name" placeholder="Your Name">
+        <input id="course" placeholder="Your Course">
+        <input id="goal" placeholder="Daily Study Goal (hours)">
+
+        <label for="gender">Gender:</label>
+        <select id="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+
+        <br>
+        <button onclick="saveProfile()">Save Profile</button>
+        <p id="profileOutput"></p>
+
+        <div id="profileInfo"></div>
+        <img id="profilePhoto" src="" alt="Profile Photo" width="150" style="border-radius:50%; margin-top:10px;">
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

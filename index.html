@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SmartStudy Login</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>SmartStudy Login</h1>
+
+    <input id="username" placeholder="Enter Username"><br><br>
+    <input id="password" type="password" placeholder="Enter Password"><br><br>
+
+    <button id="loginBtn">Login</button>
+
+    <p style="margin-top:10px;">
+        If you are new? <a href="register.html" style="color:blue;">Register here</a>
+    </p>
+
+    <p id="logoutMessage" style="color:green;"></p>
+</div>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("loginBtn").addEventListener("click", login);
+    const msg = localStorage.getItem("logoutMsg");
+    if(msg){
+        document.getElementById("logoutMessage").innerText = msg;
+        localStorage.removeItem("logoutMsg");
+    }
+});
+</script>
+
+</body>
+</html>

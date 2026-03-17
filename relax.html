@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Relax Zone</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body { font-family: Arial, sans-serif; background:#f8f9fa; margin:0; padding:0; }
+.main { padding:20px; margin-left:220px; }
+.sidebar { width:200px; position:fixed; height:100%; background:#111; padding:20px; color:white; }
+.sidebar a { display:block; color:white; text-decoration:none; margin:10px 0; }
+.sidebar a:hover { color:#10b981; }
+
+.game-box { margin-top:20px; padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+.memory-grid { display:grid; grid-template-columns:repeat(4,80px); gap:10px; margin-top:15px; }
+.card { width:80px; height:80px; background:#4CAF50; color:white; font-size:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; transition:transform 0.2s; }
+.card.flipped { transform: rotateY(180deg); background:#10b981; }
+
+.timer { font-size:24px; margin-top:10px; font-weight:bold; }
+.reaction-box { width:150px; height:150px; margin-top:10px; cursor:pointer; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; user-select:none; transition:all 0.3s; }
+button { padding:8px 15px; border:none; border-radius:6px; background:#3b82f6; color:white; cursor:pointer; margin-top:5px; }
+button:hover { background:#2563eb; }
+
+#scoreBox { font-size:20px; font-weight:bold; color:#f59e0b; margin-bottom:10px; }
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2 class="logo">SmartStudy</h2>
+<a href="dashboard.html">🏠 Dashboard</a>
+<a href="planner.html">📅 Planner</a>
+<a href="task.html">✅ Tasks</a>
+<a href="notes.html">📝 Notes</a>
+<a href="progress.html">📊 Progress</a>
+<a href="quiz.html">🧠 Quiz</a>
+<a href="relax.html">🧩 Relax Zone</a>
+<a href="settings.html">⚙ Settings</a>
+<a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<div class="main">
+<h1>Relax Zone 🧩</h1>
+<p>Take a short break! Play these games to refresh your brain.</p>
+
+<!-- Total Score -->
+<div id="scoreBox">🎯 Total Points: 0</div>
+
+<!-- BREAK TIMER -->
+<div class="game-box">
+<h2>Study Break Timer</h2>
+<p>Recommended break: 5 minutes</p>
+<div class="timer" id="breakTimer">05:00</div>
+<button onclick="startBreak()">Start Break</button>
+</div>
+
+<!-- MEMORY GAME -->
+<div class="game-box">
+<h2>Memory Puzzle</h2>
+<p>Match the pairs! +5 points for each correct match</p>
+<div class="memory-grid" id="memoryGrid"></div>
+</div>
+
+<!-- QUICK PUZZLE -->
+<div class="game-box">
+<h2>Quick Brain Puzzle</h2>
+<p>Solve the puzzle! +5 points for correct answer</p>
+<h3 id="quickPuzzleQuestion"></h3>
+<input id="puzzleAnswer" placeholder="Your Answer">
+<button onclick="checkPuzzle()">Submit</button>
+<p id="puzzleResult"></p>
+<button onclick="newQuickPuzzle()">Next Puzzle</button>
+</div>
+
+<!-- REACTION GAME -->
+<div class="game-box">
+<h2>Reaction Test</h2>
+<p>Click the box as soon as it turns green! Faster clicks = more points</p>
+<div class="reaction-box" id="reactionBox">Wait...</div>
+<p id="reactionResult"></p>
+<button onclick="startReaction()">Start Reaction Test</button>
+</div>
+
+<!-- SIMPLE MATH GAME -->
+<div class="game-box">
+<h2>Quick Math Challenge</h2>
+<p>Solve the arithmetic problem! +5 points for correct answer</p>
+<div id="mathProblem" style="font-size:20px;font-weight:bold;"></div>
+<input id="mathAnswer" placeholder="Your Answer">
+<button onclick="checkMath()">Submit</button>
+<p id="mathResult"></p>
+<button onclick="newMathProblem()">New Problem</button>
+</div>
+
+<script>
+// -------------------- GLOBAL SCORE --------------------
+let totalScore = 0;
+function addScore(points){
+  totalScore += points;
+  document.getElementById("scoreBox").textContent = "🎯 Total Points: " + totalScore;
+}
+
+// -------------------- BREAK TIMER --------------------
+let breakInterval;
+function startBreak(){
+  clearInterval(breakInterval);
+  let time = 300;
+  breakInterval = setInterval(()=>{
+    let min=Math.floor(time/60);
+    let sec=time%60;
+    document.getElementById("breakTimer").textContent=`${min<10?"0":""}${min}:${sec<10?"0":""}${sec}`;
+    time--;
+    if(time<0){ clearInterval(breakInterval); alert("Break finished! Time to study again."); }
+  },1000);
+}
+
+// -------------------- MEMORY GAME --------------------
+let memorySymbols=["🍎","🍌","📘","🧠","⭐","🌙","⚡","🎵"];
+memorySymbols=[...memorySymbols, ...memorySymbols];
+let memoryGrid=document.getElementById("memoryGrid");
+let firstCard=null, secondCard=null, lock=false;
+
+function initMemoryGame(){
+  memoryGrid.innerHTML="";
+  memorySymbols.sort(()=>0.5-Math.random());
+  firstCard=null; secondCard=null; lock=false;
+  memorySymbols.forEach(symbol=>{
+    let card=document.createElement("div");
+    card.className="card";
+    card.textContent="?";
+    card.dataset.symbol=symbol;
+    card.onclick=function(){
+      if(lock || card.classList.contains("flipped")) return;
+      card.textContent=symbol; card.classList.add("flipped");
+      if(!firstCard) firstCard=card;
+      else{ secondCard=card; lock=true;
+        if(firstCard.dataset.symbol===secondCard.dataset.symbol){
+          addScore(5); // +5 points
+          firstCard=null; secondCard=null; lock=false;
+        } else {
+          setTimeout(()=>{
+            firstCard.textContent="?"; firstCard.classList.remove("flipped");
+            secondCard.textContent="?"; secondCard.classList.remove("flipped");
+            firstCard=null; secondCard=null; lock=false;
+          },800);
+        }
+      }
+    };
+    memoryGrid.appendChild(card);
+  });
+}
+initMemoryGame();
+
+// -------------------- QUICK PUZZLE --------------------
+let puzzles=[
+  {q:"2,4,8,16,?", a:"32"},
+  {q:"1,1,2,3,5,?", a:"8"},
+  {q:"3,6,12,24,?", a:"48"},
+  {q:"10,20,40,80,?", a:"160"}
+];
+let currentPuzzle;
+
+function newQuickPuzzle(){
+  currentPuzzle = puzzles[Math.floor(Math.random()*puzzles.length)];
+  document.getElementById("quickPuzzleQuestion").textContent=currentPuzzle.q;
+  document.getElementById("puzzleAnswer").value="";
+  document.getElementById("puzzleResult").textContent="";
+}
+function checkPuzzle(){
+  let ans=document.getElementById("puzzleAnswer").value;
+  if(ans==currentPuzzle.a){
+    document.getElementById("puzzleResult").textContent="✅ Correct!";
+    addScore(5);
+  } else document.getElementById("puzzleResult").textContent="❌ Try again!";
+}
+newQuickPuzzle();
+
+// -------------------- REACTION GAME --------------------
+let reactionTimeout;
+function startReaction(){
+  const box=document.getElementById("reactionBox");
+  const result=document.getElementById("reactionResult");
+  box.style.background="#ef4444"; box.textContent="Wait..."; result.textContent="";
+  let randomTime=Math.random()*3000+2000;
+  reactionTimeout=setTimeout(()=>{
+    let start=Date.now();
+    box.style.background="#10b981"; box.textContent="Click!";
+    box.onclick=function(){
+      let reactionTime=Date.now()-start;
+      result.textContent=`Your reaction: ${reactionTime} ms 🎯`;
+      let points = Math.max(1, 500 - reactionTime); // faster = more points
+      addScore(points);
+      box.onclick=null; box.style.background="#ef4444"; box.textContent="Wait...";
+    };
+  },randomTime);
+}
+
+// -------------------- MATH GAME --------------------
+let currentAnswer;
+function newMathProblem(){
+  let a=Math.floor(Math.random()*20+1);
+  let b=Math.floor(Math.random()*20+1);
+  let ops=["+","-","*"];
+  let op=ops[Math.floor(Math.random()*ops.length)];
+  currentAnswer = eval(`${a}${op}${b}`);
+  document.getElementById("mathProblem").textContent=`${a} ${op} ${b}`;
+  document.getElementById("mathAnswer").value="";
+  document.getElementById("mathResult").textContent="";
+}
+function checkMath(){
+  let ans=document.getElementById("mathAnswer").value;
+  if(Number(ans)===currentAnswer){
+    document.getElementById("mathResult").textContent="✅ Correct!";
+    addScore(5);
+  } else document.getElementById("mathResult").textContent="❌ Try again!";
+}
+newMathProblem();
+
+// -------------------- LOGOUT --------------------
+function logout(){
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("currentUser");
+  localStorage.setItem("logoutMsg","Logged out successfully");
+  window.location.href="index.html";
+}
+</script>
+
+</body>
+</html>

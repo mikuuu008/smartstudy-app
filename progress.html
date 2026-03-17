@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Progress / Analytics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2 class="logo">SmartStudy</h2>
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="planner.html">📅 Planner</a>
+    <a href="task.html">✅ Tasks</a>
+    <a href="notes.html">📝 Notes</a>
+    <a href="progress.html">📊 Progress</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="register.html">📝 Register</a>
+    <a href="reviews.html">💬 Reviews</a>
+    <a href="relax.html">🧩 Relax Zone</a>
+   <a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<div class="main">
+    <h1>Progress / Analytics</h1>
+
+    <h2>Tasks Progress</h2>
+    <div class="progress-bar"><div id="tasksProgress" class="progress-fill">0%</div></div>
+
+    <h2>Planner Progress</h2>
+    <div class="progress-bar"><div id="plannerProgress" class="progress-fill">0%</div></div>
+
+    <h2>Notes Importance</h2>
+    <div class="progress-bar"><div id="notesProgress" class="progress-fill">0%</div></div>
+
+    <h2>HCI Progress</h2>
+<div class="progress-bar"><div id="hciProgress" class="progress-fill">0%</div></div>
+
+<h2>CGV Progress</h2>
+<div class="progress-bar"><div id="cgvProgress" class="progress-fill">0%</div></div>
+
+</div>
+
+<script>
+function updateProgress(){
+    // Calculate Tasks Progress
+    let tasks = JSON.parse(localStorage.getItem("tasks")||"[]");
+    let taskPoints = tasks.reduce((sum,t)=>sum+t.points,0);
+    let maxTaskPoints = tasks.length * 10 || 1;
+    let taskPercent = Math.round((taskPoints/maxTaskPoints)*100);
+    document.getElementById("tasksProgress").style.width=taskPercent+"%";
+    document.getElementById("tasksProgress").textContent=taskPercent+"%";
+
+    // Planner Progress
+    let planner = JSON.parse(localStorage.getItem("planner")||"[]");
+    let plannerPoints = planner.reduce((sum,p)=>sum+p.points,0);
+    let maxPlannerPoints = planner.length*10 || 1;
+    let plannerPercent = Math.round((plannerPoints/maxPlannerPoints)*100);
+    document.getElementById("plannerProgress").style.width=plannerPercent+"%";
+    document.getElementById("plannerProgress").textContent=plannerPercent+"%";
+
+    // Notes Progress
+    let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+    let notesPoints = notes.reduce((sum,n)=>sum+n.points,0);
+    let maxNotesPoints = notes.length*5 || 1;
+    let notesPercent = Math.round((notesPoints/maxNotesPoints)*100);
+    document.getElementById("notesProgress").style.width=notesPercent+"%";
+    document.getElementById("notesProgress").textContent=notesPercent+"%";
+}
+
+window.onload=updateProgress;
+</script>
+</body>
+</html>

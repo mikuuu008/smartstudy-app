@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quiz / Self-Assessment</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { font-family: Arial, sans-serif; background:#f8f9fa; margin:0; padding:0; }
+.main { padding:20px; margin-left:220px; }
+.sidebar { width:200px; position:fixed; height:100%; background:#111; padding:20px; color:white; }
+.sidebar a { display:block; color:white; text-decoration:none; margin:10px 0; }
+.sidebar a:hover { color:#10b981; }
+
+#totalPoints { font-size:20px; font-weight:bold; color:#2563eb; margin-bottom:20px; }
+
+.quiz-card { background:#fff; padding:20px; border-radius:12px; margin-bottom:15px; box-shadow:0 4px 8px rgba(0,0,0,0.1); transition:transform 0.2s; }
+.quiz-card:hover { transform:scale(1.02); }
+.quiz-question { font-weight:bold; margin-bottom:10px; font-size:18px; }
+.quiz-options label { display:block; margin-bottom:5px; cursor:pointer; }
+button { padding:8px 15px; border:none; border-radius:6px; background:#3b82f6; color:white; cursor:pointer; margin-top:10px; }
+button:hover { background:#2563eb; }
+#quizScore { margin-top:15px; font-size:20px; font-weight:bold; color:#f59e0b; }
+.correct { background:#10b981; color:white; padding:5px 10px; border-radius:6px; display:inline-block; margin-top:5px; }
+.incorrect { background:#ef4444; color:white; padding:5px 10px; border-radius:6px; display:inline-block; margin-top:5px; }
+
+/* Confetti animation */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #f59e0b;
+  top: 0;
+  animation: fall 1s linear forwards;
+}
+@keyframes fall {
+  to { transform: translateY(300px) rotate(360deg); opacity:0; }
+}
+
+/* Cute character animation */
+.cheer-girl {
+  position:absolute;
+  width:80px;
+  height:80px;
+  background-image:url('images/cheer-girl.png'); /* cute cheering girl image */
+  background-size:contain;
+  background-repeat:no-repeat;
+  top:50px;
+  right:50px;
+  animation: jump 1s ease-out forwards;
+  display:none;
+}
+@keyframes jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+  100% { transform: translateY(0); opacity:0; }
+}
+</style>
+</head>
+
+<body>
+<div class="sidebar">
+<h2 class="logo">SmartStudy</h2>
+<a href="dashboard.html">🏠 Dashboard</a>
+<a href="planner.html">📅 Planner</a>
+<a href="task.html">✅ Tasks</a>
+<a href="notes.html">📝 Notes</a>
+<a href="progress.html">📊 Progress</a>
+<a href="quiz.html">🧠 Quiz</a>
+<a href="settings.html">⚙ Settings</a>
+<a href="register.html">📝 Register</a>
+<a href="reviews.html">💬 Reviews</a>
+<a href="relax.html">🧩 Relax Zone</a>
+<a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<div class="main">
+<h1>Quiz / Self-Assessment 🧠</h1>
+<div id="totalPoints">Total Points: 0</div>
+<div id="quizContainer"></div>
+<button id="nextBtn" style="display:none;">Next Question</button>
+<h3 id="quizScore"></h3>
+<div class="cheer-girl" id="cheerGirl"></div>
+</div>
+
+<script>
+const quizQuestions=[
+  {q:"What is 2+2?", options:["3","4","5","6"], a:"4", points:5},
+  {q:"Capital of Sri Lanka?", options:["Kandy","Colombo","Galle","Jaffna"], a:"Colombo", points:5},
+  {q:"HTML stands for?", options:["HyperText Markup Language","Home Tool Markup Language","HyperText Machine Language","Hyper Tool Markup Language"], a:"HyperText Markup Language", points:5}
+];
+
+let currentIndex=0;
+let quizScore=0;
+
+function loadTotalPoints(){
+  const pts=parseInt(localStorage.getItem("totalPoints")||"0");
+  document.getElementById("totalPoints").textContent="Total Points: "+pts;
+}
+
+function showQuestion(){
+  const container=document.getElementById("quizContainer");
+  container.innerHTML="";
+  const q=quizQuestions[currentIndex];
+
+  const card=document.createElement("div");
+  card.className="quiz-card";
+  card.innerHTML=`
+    <div class="quiz-question">${currentIndex+1}. ${q.q}</div>
+    <div class="quiz-options">
+      ${q.options.map(opt=>`<label><input type="radio" name="q" value="${opt}"> ${opt}</label>`).join("")}
+    </div>
+    <div id="result"></div>
+  `;
+  container.appendChild(card);
+  document.getElementById("nextBtn").style.display="none";
+
+  document.querySelectorAll('input[name="q"]').forEach(input=>{
+    input.addEventListener("change", ()=>checkAnswer(input.value));
+  });
+}
+
+function showConfetti(){
+  for(let i=0;i<30;i++){
+    const conf=document.createElement("div");
+    conf.className="confetti";
+    conf.style.left=Math.random()*window.innerWidth+"px";
+    conf.style.backgroundColor=`hsl(${Math.random()*360}, 100%, 50%)`;
+    document.body.appendChild(conf);
+    setTimeout(()=>document.body.removeChild(conf),1000);
+  }
+}
+
+function showCheerGirl(){
+  const girl=document.getElementById("cheerGirl");
+  girl.style.display="block";
+  girl.style.opacity="1";
+  girl.style.animation="jump 1s ease-out forwards";
+  setTimeout(()=>{girl.style.display="none"; girl.style.opacity="0";},1000);
+}
+
+function checkAnswer(selected){
+  const q=quizQuestions[currentIndex];
+  const resultBox=document.getElementById("result");
+  if(selected===q.a){
+    resultBox.innerHTML=`<span class="correct">Correct! +${q.points} pts</span>`;
+    quizScore+=q.points;
+    showConfetti();
+    showCheerGirl(); // new cheer animation
+  } else {
+    resultBox.innerHTML=`<span class="incorrect">Incorrect! Correct answer: ${q.a}</span>`;
+  }
+  document.getElementById("nextBtn").style.display="inline-block";
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex<quizQuestions.length){
+    showQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz(){
+  let storedPoints=parseInt(localStorage.getItem("totalPoints")||"0");
+  storedPoints+=quizScore;
+  localStorage.setItem("totalPoints", storedPoints);
+
+  document.getElementById("quizContainer").innerHTML="<h2>🎉 Quiz Finished!</h2>";
+  document.getElementById("quizScore").textContent="Your Score: "+quizScore+" pts";
+  document.getElementById("totalPoints").textContent="Total Points: "+storedPoints;
+  document.getElementById("nextBtn").style.display="none";
+}
+
+function logout(){
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("currentUser");
+  localStorage.setItem("logoutMsg","Logged out successfully");
+  window.location.href="index.html";
+}
+
+window.onload=()=>{
+  loadTotalPoints();
+  showQuestion();
+};
+
+document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+</script>
+</body>
+</html>

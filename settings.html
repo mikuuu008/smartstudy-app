@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2 class="logo">SmartStudy</h2>
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="planner.html">📅 Planner</a>
+    <a href="task.html">✅ Tasks</a>
+    <a href="notes.html">📝 Notes</a>
+    <a href="progress.html">📊 Progress</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="register.html">📝 Register</a>
+    <a href="reviews.html">💬 Reviews</a>
+    <a href="relax.html">🧩 Relax Zone</a>
+   <a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<div class="main">
+    <h1>Settings</h1>
+
+    <button onclick="toggleDark()">Toggle Dark Mode 🌙</button>
+    <button onclick="resetAll()">Reset All Points & Data ❌</button>
+</div>
+
+<script>
+function toggleDark(){
+    document.body.classList.toggle("dark");
+}
+
+function resetAll(){
+    if(confirm("Are you sure you want to delete all data?")){
+        localStorage.clear();
+        alert("All data reset!");
+        location.reload();
+    }
+}
+</script>
+</body>
+</html>

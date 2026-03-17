@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SmartStudy Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('images/dashboard-bg.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    position: fixed;
+    height: 100%;
+    padding: 20px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    overflow-y: auto;
+}
+.sidebar a { display:block; color:white; text-decoration:none; margin:10px 0; transition:color 0.3s; }
+.sidebar a:hover { color:#10b981; }
+
+/* Main content */
+.main { margin-left:240px; padding:20px; }
+
+/* Cards */
+.card {
+    background: rgba(255,255,255,0.85);
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 6px 12px rgba(0,0,0,0.2);
+}
+
+/* Welcome box */
+.welcome-box { display:flex; align-items:center; gap:15px; margin-bottom:20px; }
+.waving-girl { width:60px; height:60px; background-image:url('images/waving-girl.jpeg'); background-size:contain; background-repeat:no-repeat; animation:wave 1.5s infinite; }
+@keyframes wave { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(15deg);} }
+
+/* Progress bar */
+.progress-bar { width:100%; background:#e5e7eb; border-radius:10px; overflow:hidden; height:24px; }
+.progress-fill { height:100%; width:0%; background:#3b82f6; color:white; text-align:center; line-height:24px; font-weight:bold; }
+
+/* Topbar clock/greeting */
+.topbar { position:fixed; right:20px; top:20px; color:white; font-weight:bold; text-align:right; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+<h2>SmartStudy</h2>
+<a href="dashboard.html">🏠 Dashboard</a>
+<a href="planner.html">📅 Planner</a>
+<a href="task.html">✅ Tasks</a>
+<a href="notes.html">📝 Notes</a>
+<a href="progress.html">📊 Progress</a>
+<a href="quiz.html">🧠 Quiz</a>
+<a href="reviews.html">💬 Reviews</a>
+<a href="relax.html">🧩 Relax Zone</a>
+<a href="#" onclick="logout()">🚪 Logout</a>
+</div>
+
+<div class="topbar">
+<h3 id="greetingText">Hello 👋</h3>
+<small id="clock"></small>
+</div>
+
+<div class="main">
+
+<!-- Welcome -->
+<div class="welcome-box">
+<div class="waving-girl"></div>
+<h2 id="welcomeMsg"></h2>
+</div>
+
+<!-- User Profile -->
+<div class="card">
+<h2>User Profile</h2>
+<img id="profilePhoto" src="images/male.png" style="width:80px;height:80px;border-radius:50%;">
+<div id="profileInfo"></div>
+</div>
+
+<!-- Study Record -->
+<div class="card">
+<h2>Add Study Record</h2>
+<select id="subject">
+  <option value="">Select Subject</option>
+  <option value="Mathematics">Mathematics</option>
+  <option value="Physics">Physics</option>
+  <option value="HCI">HCI</option>
+  <option value="Computer Graphics & Visualization">Computer Graphics & Visualization</option>
+  <option value="Other">Other</option>
+</select>
+<input id="hours" placeholder="Hours">
+<button id="addStudyBtn">Add Study</button>
+<ul id="records"></ul>
+
+<h3>HCI Mini Quiz</h3>
+<p>Q: What is Fitts’ Law used for?</p>
+<input id="hciAnswer" placeholder="Type your answer">
+<button id="hciSubmitBtn">Submit</button>
+<p id="hciResult"></p>
+
+<h3>Study Timer</h3>
+<div id="timer">25:00</div>
+<button id="startTimer">Start</button>
+<button id="stopTimer">Stop</button>
+<button id="resetTimer">Reset</button>
+
+<h4>Daily Goal Progress</h4>
+<div class="progress-bar">
+<div id="goalProgress" class="progress-fill">0%</div>
+</div>
+</div>
+
+<!-- Study Analytics -->
+<div class="card">
+<h2>Study Analytics</h2>
+<canvas id="studyChart"></canvas>
+<h3>Study Style Analysis</h3>
+<canvas id="styleChart"></canvas>
+</div>
+
+<!-- Weekly Productivity -->
+<div class="card">
+<h2>Weekly Productivity</h2>
+<canvas id="weeklyChart"></canvas>
+<div id="productivityScore"></div>
+</div>
+
+<!-- Task Manager -->
+<div class="card">
+<h2>Task Manager</h2>
+<input id="taskInput" placeholder="New Task">
+<button id="addTaskBtn">Add Task</button>
+<ul id="taskList"></ul>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
